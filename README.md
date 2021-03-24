@@ -1,4 +1,4 @@
-# WW-FORM-INPUT
+# WW-RANGE-INPUT
 
 This is an element for Weweb, to display an input.
 

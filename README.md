@@ -1,4 +1,4 @@
-# WW-RANGE-INPUT
+# WW-FORM-INPUT-RANGE
 
 This is an element for Weweb, to display an input.
 
@@ -12,4 +12,4 @@ To serve locally, run `yarn serve --port=[PORT]`, and then go to Weweb editor, o
 
 ## Build
 
-Before release, you can check build error by running `yarn build --name=ww-form-input`
+Before release, you can check build error by running `yarn build --name=ww-form-input-range`

@@ -6,7 +6,7 @@
 
         <input
             ref="input"
-            class="ww-form-input"
+            class="ww-form-input-range"
             :class="{ editing: isEditing }"
             type="range"
             :name="isEditing ? `${content.globalSettings.name}-editing` : content.globalSettings.name"
@@ -36,14 +36,10 @@ export default {
             min: 0,
             max: 10000,
             step: 1,
-            rows: 4,
-            cols: 10,
-            resize: false,
         },
         globalStyle: {
             fontSize: '15px',
             fontFamily: '',
-            color: 'black',
             rangeBackgroundColor: 'rgb(9, 154, 242)',
             selectorBorderColor: '#1565C0',
             selectorBackgroundColor: 'rgb(9, 154, 242)',
@@ -84,14 +80,13 @@ export default {
     /* wwEditor:end */
     data() {
         return {
-            wwLang: wwLib.wwLang,
             selectedValue: 0,
         };
     },
     watch: {
         'content.globalSettings'() {
             if (!this.$refs.input && !this.$refs.input.value) return;
-            if (this.content.globalSettings.type === 'range') this.selectedValue = this.$refs.input.value;
+            this.selectedValue = this.$refs.input.value;
         },
     },
     computed: {
@@ -113,7 +108,6 @@ export default {
         },
         tooltipStyle() {
             return {
-                color: this.content.globalStyle.color || 'black',
                 fontSize: `${this.content.globalStyle.fontSize || '15px'}`,
                 fontFamily: this.content.globalStyle.fontFamily,
                 '--tooltip-position':
@@ -130,7 +124,7 @@ export default {
     },
     mounted() {
         if (!this.$refs.input && !this.$refs.input.value) return;
-        if (this.content.globalSettings.type === 'range') this.selectedValue = this.$refs.input.value;
+        this.selectedValue = this.$refs.input.value;
     },
 };
 </script>

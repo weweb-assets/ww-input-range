@@ -176,7 +176,6 @@ export default {
         width: 100%;
         height: 5px;
         cursor: pointer;
-        animate: 0.2s;
         box-shadow: 0px 0px 0px #000000;
         background: var(--range-background);
         border-radius: 1px;
@@ -197,7 +196,6 @@ export default {
         width: 100%;
         height: 5px;
         cursor: pointer;
-        animate: 0.2s;
         box-shadow: 0px 0px 0px #000000;
         background: var(--range-background);
         border-radius: 1px;
@@ -216,7 +214,6 @@ export default {
         width: 100%;
         height: 5px;
         cursor: pointer;
-        animate: 0.2s;
         background: transparent;
         border-color: transparent;
         color: transparent;

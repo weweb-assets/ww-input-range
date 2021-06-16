@@ -21,8 +21,11 @@
 </template>
 
 <script>
+/* wwEditor:start */
+import { getSettingsConfigurations } from './configuration';
+/* wwEditor:end */
+
 export default {
-    name: '__COMPONENT_NAME__',
     props: {
         content: Object,
         /* wwEditor:start */
@@ -50,32 +53,7 @@ export default {
     },
     /* wwEditor:start */
     wwEditorConfiguration({ content }) {
-        return {
-            styleOptions: {
-                ...(function () {
-                    return content.isTooltip
-                        ? {
-                              tooltipBackground: {
-                                  path: 'globalStyle.tooltipBackground',
-                                  label: {
-                                      en: 'Selector background',
-                                      fr: 'Selector background',
-                                  },
-                                  type: 'Color',
-                              },
-                              tooltipTextColor: {
-                                  path: 'globalStyle.tooltipTextColor',
-                                  label: {
-                                      en: 'Selector background',
-                                      fr: 'Selector background',
-                                  },
-                                  type: 'Color',
-                              },
-                          }
-                        : {};
-                })(),
-            },
-        };
+        return getSettingsConfigurations(content);
     },
     /* wwEditor:end */
     data() {

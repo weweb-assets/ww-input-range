@@ -1,9 +1,8 @@
 <template>
     <div class="input-container" :style="tooltipStyle">
-        <div class="tooltiptext" id="tooltiptext" v-if="content.isTooltip">
-            {{ this.selectedValue }}
+        <div v-if="content.isTooltip" id="tooltiptext" class="tooltiptext">
+            {{ selectedValue }}
         </div>
-
         <input
             ref="input"
             class="ww-form-input-range"
@@ -27,9 +26,9 @@ import { getSettingsConfigurations } from './configuration';
 
 export default {
     props: {
-        content: Object,
+        content: { type: Object, required: true },
         /* wwEditor:start */
-        wwEditorState: Object,
+        wwEditorState: { type: Object, required: true },
         /* wwEditor:end */
     },
     wwDefaultContent: {
@@ -61,12 +60,6 @@ export default {
             selectedValue: 0,
         };
     },
-    watch: {
-        'content.globalSettings'() {
-            if (!this.$refs.input && !this.$refs.input.value) return;
-            this.selectedValue = this.$refs.input.value;
-        },
-    },
     computed: {
         isEditing() {
             /* wwEditor:start */
@@ -95,14 +88,20 @@ export default {
             };
         },
     },
-    methods: {
-        rangeVal(event) {
-            this.selectedValue = event.target.value;
+    watch: {
+        'content.globalSettings'() {
+            if (!this.$refs.input && !this.$refs.input.value) return;
+            this.selectedValue = this.$refs.input.value;
         },
     },
     mounted() {
         if (!this.$refs.input && !this.$refs.input.value) return;
         this.selectedValue = this.$refs.input.value;
+    },
+    methods: {
+        rangeVal(event) {
+            this.selectedValue = event.target.value;
+        },
     },
 };
 </script>

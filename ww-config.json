@@ -1,9 +1,0 @@
-{
-    "componentPath": "./src/wwElement.vue",
-    "editor": {
-        "label": {
-            "fr": "Range Input",
-            "en": "Range Input"
-        }
-    }
-}

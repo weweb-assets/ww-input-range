@@ -1,29 +1,24 @@
 <template>
-    <div class="input-container" :style="tooltipStyle">
-        <div v-if="content.isTooltip" id="tooltiptext" class="tooltiptext">
+    <div class="ww-form-input-range" :style="tooltipStyle">
+        <div v-if="content.isTooltip" id="tooltiptext" class="ww-form-input-range__tooltip">
             {{ selectedValue }}
         </div>
         <input
             ref="input"
-            class="ww-form-input-range"
             :class="{ editing: isEditing }"
             type="range"
-            :name="isEditing ? `${content.globalSettings.name}-editing` : content.globalSettings.name"
-            :required="content.globalSettings.required"
+            :name="isEditing ? `${content.name}-editing` : content.name"
+            :required="content.required"
             :style="style"
-            :min="content.globalSettings.min"
-            :max="content.globalSettings.max"
-            :step="content.globalSettings.step"
+            :min="content.min"
+            :max="content.max"
+            :step="content.step"
             @input="rangeVal"
         />
     </div>
 </template>
 
 <script>
-/* wwEditor:start */
-import { getSettingsConfigurations } from './configuration';
-/* wwEditor:end */
-
 export default {
     props: {
         content: { type: Object, required: true },
@@ -31,30 +26,6 @@ export default {
         wwEditorState: { type: Object, required: true },
         /* wwEditor:end */
     },
-    wwDefaultContent: {
-        globalSettings: {
-            name: '',
-            required: true,
-            min: 0,
-            max: 10000,
-            step: 1,
-        },
-        globalStyle: {
-            fontSize: '15px',
-            fontFamily: '',
-            rangeBackgroundColor: 'rgb(9, 154, 242)',
-            selectorBorderColor: '#1565C0',
-            selectorBackgroundColor: 'rgb(9, 154, 242)',
-            tooltipBackground: 'rgb(9, 154, 242)',
-            tooltipTextColor: '#FFFFFF',
-        },
-        isTooltip: true,
-    },
-    /* wwEditor:start */
-    wwEditorConfiguration({ content }) {
-        return getSettingsConfigurations(content);
-    },
-    /* wwEditor:end */
     data() {
         return {
             selectedValue: 0,
@@ -69,27 +40,25 @@ export default {
             return false;
         },
         style() {
-            if (!this.content || !this.content.globalStyle) return {};
             return {
-                '--range-border': this.content.globalStyle.rangeBorderColor,
-                '--range-background': this.content.globalStyle.rangeBackgroundColor,
-                '--selector-border': this.content.globalStyle.selectorBorderColor,
-                '--selector-background': this.content.globalStyle.selectorBackgroundColor,
+                '--range-border': this.content.rangeBorderColor,
+                '--range-background': this.content.rangeBackgroundColor,
+                '--selector-border': this.content.selectorBorderColor,
+                '--selector-background': this.content.selectorBackgroundColor,
             };
         },
         tooltipStyle() {
             return {
-                fontSize: `${this.content.globalStyle.fontSize || '15px'}`,
-                fontFamily: this.content.globalStyle.fontFamily,
-                '--tooltip-position':
-                    'calc(' + (this.selectedValue * 100) / this.content.globalSettings.max + '% - 20px)',
-                '--tooltip-background': this.content.globalStyle.tooltipBackground,
-                '--tooltip-text-color': this.content.globalStyle.tooltipTextColor,
+                fontSize: `${this.content.fontSize}`,
+                fontFamily: this.content.fontFamily,
+                '--tooltip-position': 'calc(' + (this.selectedValue * 100) / this.content.max + '% - 20px)',
+                '--tooltip-background': this.content.tooltipBackground,
+                '--tooltip-text-color': this.content.tooltipTextColor,
             };
         },
     },
     watch: {
-        'content.globalSettings'() {
+        content() {
             if (!this.$refs.input && !this.$refs.input.value) return;
             this.selectedValue = this.$refs.input.value;
         },
@@ -107,30 +76,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.ww-form-input {
-    width: 100%;
-    outline: none;
-    font-family: inherit;
-    border: inherit;
-
-    &::placeholder {
-        color: inherit;
-        opacity: 0.7;
-    }
-    /* wwEditor:start */
-    &.editing {
-        pointer-events: none;
-    }
-    /* wwEditor:end */
-}
-
-.input-container {
+.ww-form-input-range {
     position: relative;
     width: 100%;
     outline: none;
     font-family: inherit;
     border: inherit;
-
     &::placeholder {
         color: inherit;
         opacity: 0.7;
@@ -140,7 +91,6 @@ export default {
         pointer-events: none;
     }
     /* wwEditor:end */
-
     input[type='range'] {
         -webkit-appearance: none;
         margin: 10px 0;
@@ -223,23 +173,21 @@ export default {
     input[type='range']:focus::-ms-fill-upper {
         background: var(--range-background);
     }
-}
-
-.input-container .tooltiptext {
-    visibility: visible;
-    background-color: var(--tooltip-background);
-    color: var(--tooltip-text-color);
-    text-align: center;
-    padding: 5px 15px;
-    border-radius: 6px;
-    position: absolute;
-    z-index: 20;
-    top: 0px;
-    left: var(--tooltip-position);
-    transform: translateY(-120%) translateX(-5%);
-}
-
-.input-container:hover .tooltiptext {
-    visibility: visible;
+    &__tooltip {
+        visibility: visible;
+        background-color: var(--tooltip-background);
+        color: var(--tooltip-text-color);
+        text-align: center;
+        padding: 5px 15px;
+        border-radius: 6px;
+        position: absolute;
+        z-index: 20;
+        top: 0px;
+        left: var(--tooltip-position);
+        transform: translateY(-120%) translateX(-5%);
+    }
+    &:hover &__tooltiptext {
+        visibility: visible;
+    }
 }
 </style>

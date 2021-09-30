@@ -43,44 +43,49 @@ export default {
             },
         },
         globalStyle: {
-            fontSize: {
-                type: 'Length',
-                label: { en: 'Font size', fr: 'Taille du texte' },
-                options: {
-                    unitChoices: [
-                        { value: 'px', label: 'px', min: 10, max: 50 },
-                        { value: 'em', label: 'em', min: 1, max: 50 },
-                        { value: 'rem', label: 'rem', min: 1, max: 50 },
-                    ],
+            type: 'Object',
+            options: {
+                item: {
+                    fontSize: {
+                        type: 'Length',
+                        label: { en: 'Font size', fr: 'Taille du texte' },
+                        options: {
+                            unitChoices: [
+                                { value: 'px', label: 'px', min: 10, max: 50 },
+                                { value: 'em', label: 'em', min: 1, max: 50 },
+                                { value: 'rem', label: 'rem', min: 1, max: 50 },
+                            ],
+                        },
+                        hidden: ({ isTooltip }) => !isTooltip,
+                    },
+                    fontFamily: {
+                        type: 'FontFamily',
+                        label: { en: 'Font family', fr: 'Font' },
+                        hidden: ({ isTooltip }) => !isTooltip,
+                    },
+                    rangeBackgroundColor: {
+                        label: { en: 'Range background', fr: 'Range background' },
+                        type: 'Color',
+                    },
+                    selectorBorderColor: {
+                        label: { en: 'Selector border', fr: 'Selector border' },
+                        type: 'Color',
+                    },
+                    selectorBackgroundColor: {
+                        label: { en: 'Selector background', fr: 'Selector background' },
+                        type: 'Color',
+                    },
+                    tooltipBackground: {
+                        label: { en: 'Tooltip background', fr: 'Tooltip background' },
+                        type: 'Color',
+                        hidden: ({ isTooltip }) => !isTooltip,
+                    },
+                    tooltipTextColor: {
+                        label: { en: 'Tooltip background', fr: 'Tooltip background' },
+                        type: 'Color',
+                        hidden: ({ isTooltip }) => !isTooltip,
+                    },
                 },
-                hidden: ({ isTooltip }) => !isTooltip,
-            },
-            fontFamily: {
-                type: 'FontFamily',
-                label: { en: 'Font family', fr: 'Font' },
-                hidden: ({ isTooltip }) => !isTooltip,
-            },
-            rangeBackgroundColor: {
-                label: { en: 'Range background', fr: 'Range background' },
-                type: 'Color',
-            },
-            selectorBorderColor: {
-                label: { en: 'Selector border', fr: 'Selector border' },
-                type: 'Color',
-            },
-            selectorBackgroundColor: {
-                label: { en: 'Selector background', fr: 'Selector background' },
-                type: 'Color',
-            },
-            tooltipBackground: {
-                label: { en: 'Tooltip background', fr: 'Tooltip background' },
-                type: 'Color',
-                hidden: ({ isTooltip }) => !isTooltip,
-            },
-            tooltipTextColor: {
-                label: { en: 'Tooltip background', fr: 'Tooltip background' },
-                type: 'Color',
-                hidden: ({ isTooltip }) => !isTooltip,
             },
             defaultValue: {
                 fontSize: '15px',

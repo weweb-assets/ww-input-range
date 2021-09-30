@@ -7,12 +7,12 @@
             ref="input"
             :class="{ editing: isEditing }"
             type="range"
-            :name="isEditing ? `${content.name}-editing` : content.name"
-            :required="content.required"
+            :name="isEditing ? `${content.globalSettings.name}-editing` : content.globalSettings.name"
+            :required="content.globalSettings.required"
             :style="style"
-            :min="content.min"
-            :max="content.max"
-            :step="content.step"
+            :min="content.globalSettings.min"
+            :max="content.globalSettings.max"
+            :step="content.globalSettings.step"
             @input="rangeVal"
         />
     </div>
@@ -40,25 +40,27 @@ export default {
             return false;
         },
         style() {
+            if (!this.content || !this.content.globalStyle) return {};
             return {
-                '--range-border': this.content.rangeBorderColor,
-                '--range-background': this.content.rangeBackgroundColor,
-                '--selector-border': this.content.selectorBorderColor,
-                '--selector-background': this.content.selectorBackgroundColor,
+                '--range-border': this.content.globalStyle.rangeBorderColor,
+                '--range-background': this.content.globalStyle.rangeBackgroundColor,
+                '--selector-border': this.content.globalStyle.selectorBorderColor,
+                '--selector-background': this.content.globalStyle.selectorBackgroundColor,
             };
         },
         tooltipStyle() {
             return {
-                fontSize: `${this.content.fontSize}`,
-                fontFamily: this.content.fontFamily,
-                '--tooltip-position': 'calc(' + (this.selectedValue * 100) / this.content.max + '% - 20px)',
-                '--tooltip-background': this.content.tooltipBackground,
-                '--tooltip-text-color': this.content.tooltipTextColor,
+                fontSize: this.content.globalStyle.fontSize,
+                fontFamily: this.content.globalStyle.fontFamily,
+                '--tooltip-position':
+                    'calc(' + (this.selectedValue * 100) / this.content.globalSettings.max + '% - 20px)',
+                '--tooltip-background': this.content.globalStyle.tooltipBackground,
+                '--tooltip-text-color': this.content.globalStyle.tooltipTextColor,
             };
         },
     },
     watch: {
-        content() {
+        'content.globalSettings'() {
             if (!this.$refs.input && !this.$refs.input.value) return;
             this.selectedValue = this.$refs.input.value;
         },

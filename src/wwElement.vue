@@ -1,4 +1,4 @@
-<template>
+<template v-if="content.globalSettings">
     <div class="ww-form-input-range" :style="tooltipStyle">
         <div v-if="content.isTooltip" id="tooltiptext" class="ww-form-input-range__tooltip">
             {{ selectedValue }}

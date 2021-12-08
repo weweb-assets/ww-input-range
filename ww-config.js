@@ -8,6 +8,28 @@ export default {
             section: 'settings',
             options: {
                 item: {
+                    variable: {
+                        label: {
+                            en: 'Associated variable',
+                        },
+                        type: 'Variable',
+                        options: {
+                            types: ['Number'],
+                        },
+                        section: 'settings',
+                        bindable: true,
+                        defaultValue: null,
+                    },
+                    initialValue: {
+                        label: {
+                            en: 'Initial value',
+                        },
+                        type: 'Text',
+                        section: 'settings',
+                        bindable: true,
+                        hidden: content => content.globalSettings.variable,
+                        defaultValue: '',
+                    },
                     name: {
                         label: { en: 'Name', fr: 'Nom' },
                         type: 'Text',

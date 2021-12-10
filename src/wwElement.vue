@@ -1,7 +1,7 @@
 <template v-if="content.globalSettings">
     <div class="ww-form-input-range" :style="tooltipStyle">
         <div v-if="content.isTooltip" id="tooltiptext" class="ww-form-input-range__tooltip">
-            {{ internalValue }}
+            {{ value }}
         </div>
         <input
             ref="input"
@@ -82,16 +82,12 @@ export default {
     watch: {
         /* wwEditor:start */
         'content.globalSettings.initialValue'(value) {
-            if (value && value !== undefined && !this.content.globalSettings.variableId) this.value = value;
+            if (value !== undefined && !this.content.globalSettings.variableId) this.value = value;
         },
         /* wwEditor:end */
     },
     mounted() {
-        if (
-            this.content.initialValue &&
-            this.content.initialValue !== undefined &&
-            !this.content.globalSettings.variableId
-        )
+        if (this.content.initialValue !== undefined && !this.content.globalSettings.variableId)
             this.value = this.content.initialValue;
     },
 };

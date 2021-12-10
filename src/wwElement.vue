@@ -82,12 +82,16 @@ export default {
     watch: {
         /* wwEditor:start */
         'content.globalSettings.initialValue'(value) {
-            if (value !== undefined && !this.content.variableId) this.value = value;
+            if (value && value !== undefined && !this.content.globalSettings.variableId) this.value = value;
         },
         /* wwEditor:end */
     },
     mounted() {
-        if (this.content.initialValue && this.content.initialValue !== undefined && !this.content.variableId)
+        if (
+            this.content.initialValue &&
+            this.content.initialValue !== undefined &&
+            !this.content.globalSettings.variableId
+        )
             this.value = this.content.initialValue;
     },
 };

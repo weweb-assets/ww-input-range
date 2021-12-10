@@ -31,7 +31,7 @@ export default {
     },
     emits: ['trigger-event'],
     setup(props) {
-        const internalVariableId = computed(() => props.content.globalSettings.variable);
+        const internalVariableId = computed(() => props.content.globalSettings.variableId);
         const variableId = wwLib.wwVariable.useComponentVariable(props.uid, 'value', '', internalVariableId);
 
         return { variableId };
@@ -82,12 +82,13 @@ export default {
     watch: {
         /* wwEditor:start */
         'content.globalSettings.initialValue'(value) {
-            if (value !== undefined && !this.content.variable) this.value = value;
+            if (value !== undefined && !this.content.variableId) this.value = value;
         },
         /* wwEditor:end */
     },
     mounted() {
-        if (this.content.initialValue) this.value = this.content.initialValue;
+        if (this.content.initialValue && this.content.initialValue !== undefined && !this.content.variableId)
+            this.value = this.content.initialValue;
     },
 };
 </script>

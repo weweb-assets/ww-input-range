@@ -8,7 +8,7 @@ export default {
             section: 'settings',
             options: {
                 item: {
-                    variable: {
+                    variableId: {
                         label: {
                             en: 'Associated variable',
                         },
@@ -17,7 +17,6 @@ export default {
                             types: ['Number'],
                         },
                         section: 'settings',
-                        bindable: true,
                         defaultValue: null,
                     },
                     initialValue: {
@@ -27,7 +26,7 @@ export default {
                         type: 'Text',
                         section: 'settings',
                         bindable: true,
-                        hidden: content => content.globalSettings.variable,
+                        hidden: content => content.globalSettings.variableId,
                         defaultValue: '',
                     },
                     name: {

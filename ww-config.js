@@ -2,6 +2,7 @@ export default {
     editor: {
         label: { fr: 'Range Input', en: 'Range Input' },
     },
+    triggerEvents: [{ name: 'change', label: { en: 'On change' }, event: { value: '' } }],
     properties: {
         globalSettings: {
             type: 'Object',

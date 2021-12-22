@@ -2,12 +2,35 @@ export default {
     editor: {
         label: { fr: 'Range Input', en: 'Range Input' },
     },
+    triggerEvents: [{ name: 'change', label: { en: 'On change' }, event: { value: '' } }],
     properties: {
         globalSettings: {
             type: 'Object',
             section: 'settings',
             options: {
                 item: {
+                    variableId: {
+                        label: {
+                            en: 'Associated variable',
+                        },
+                        type: 'Variable',
+                        options: {
+                            types: ['Number'],
+                        },
+                        section: 'settings',
+                        hidden: content => !content.globalSettings.variableId,
+                        defaultValue: null,
+                    },
+                    initialValue: {
+                        label: {
+                            en: 'Initial value',
+                        },
+                        type: 'Text',
+                        section: 'settings',
+                        bindable: true,
+                        hidden: content => content.globalSettings.variableId,
+                        defaultValue: '',
+                    },
                     name: {
                         label: { en: 'Name', fr: 'Nom' },
                         type: 'Text',

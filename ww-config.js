@@ -18,6 +18,7 @@ export default {
                             types: ['Number'],
                         },
                         section: 'settings',
+                        hidden: content => !content.globalSettings.variableId,
                         defaultValue: null,
                     },
                     initialValue: {

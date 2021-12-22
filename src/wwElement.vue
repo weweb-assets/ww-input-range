@@ -1,11 +1,11 @@
-<template>
-    <div class="input-container" :style="tooltipStyle">
-        <div v-if="content.isTooltip" id="tooltiptext" class="tooltiptext">
-            {{ selectedValue }}
+<template v-if="content.globalSettings">
+    <div class="ww-form-input-range" :style="tooltipStyle">
+        <div v-if="content.isTooltip" id="tooltiptext" class="ww-form-input-range__tooltip">
+            {{ value }}
         </div>
         <input
             ref="input"
-            class="ww-form-input-range"
+            v-model="value"
             :class="{ editing: isEditing }"
             type="range"
             :name="isEditing ? `${content.globalSettings.name}-editing` : content.globalSettings.name"
@@ -14,15 +14,12 @@
             :min="content.globalSettings.min"
             :max="content.globalSettings.max"
             :step="content.globalSettings.step"
-            @input="rangeVal"
         />
     </div>
 </template>
 
 <script>
-/* wwEditor:start */
-import { getSettingsConfigurations } from './configuration';
-/* wwEditor:end */
+import { computed } from 'vue';
 
 export default {
     props: {
@@ -30,34 +27,18 @@ export default {
         /* wwEditor:start */
         wwEditorState: { type: Object, required: true },
         /* wwEditor:end */
+        uid: { type: String, required: true },
     },
-    wwDefaultContent: {
-        globalSettings: {
-            name: '',
-            required: true,
-            min: 0,
-            max: 10000,
-            step: 1,
-        },
-        globalStyle: {
-            fontSize: '15px',
-            fontFamily: '',
-            rangeBackgroundColor: 'rgb(9, 154, 242)',
-            selectorBorderColor: '#1565C0',
-            selectorBackgroundColor: 'rgb(9, 154, 242)',
-            tooltipBackground: 'rgb(9, 154, 242)',
-            tooltipTextColor: '#FFFFFF',
-        },
-        isTooltip: true,
+    emits: ['trigger-event'],
+    setup(props) {
+        const internalVariableId = computed(() => props.content.globalSettings.variableId);
+        const variableId = wwLib.wwVariable.useComponentVariable(props.uid, 'value', '', internalVariableId);
+
+        return { variableId };
     },
-    /* wwEditor:start */
-    wwEditorConfiguration({ content }) {
-        return getSettingsConfigurations(content);
-    },
-    /* wwEditor:end */
     data() {
         return {
-            selectedValue: 0,
+            internalValue: 0,
         };
     },
     computed: {
@@ -67,6 +48,17 @@ export default {
             /* wwEditor:end */
             // eslint-disable-next-line no-unreachable
             return false;
+        },
+        value: {
+            get() {
+                if (this.variableId) return wwLib.wwVariable.getValue(this.variableId);
+                return this.internalValue;
+            },
+            set(value) {
+                this.$emit('trigger-event', { name: 'change', event: { value } });
+                this.internalValue = value;
+                if (this.variableId) wwLib.wwVariable.updateValue(this.variableId, value);
+            },
         },
         style() {
             if (!this.content || !this.content.globalStyle) return {};
@@ -79,58 +71,35 @@ export default {
         },
         tooltipStyle() {
             return {
-                fontSize: `${this.content.globalStyle.fontSize || '15px'}`,
+                fontSize: this.content.globalStyle.fontSize,
                 fontFamily: this.content.globalStyle.fontFamily,
-                '--tooltip-position':
-                    'calc(' + (this.selectedValue * 100) / this.content.globalSettings.max + '% - 20px)',
+                '--tooltip-position': 'calc(' + (this.value * 100) / this.content.globalSettings.max + '% - 20px)',
                 '--tooltip-background': this.content.globalStyle.tooltipBackground,
                 '--tooltip-text-color': this.content.globalStyle.tooltipTextColor,
             };
         },
     },
     watch: {
-        'content.globalSettings'() {
-            if (!this.$refs.input && !this.$refs.input.value) return;
-            this.selectedValue = this.$refs.input.value;
+        /* wwEditor:start */
+        'content.globalSettings.initialValue'(value) {
+            if (value !== undefined && !this.content.globalSettings.variableId) this.value = value;
         },
+        /* wwEditor:end */
     },
     mounted() {
-        if (!this.$refs.input && !this.$refs.input.value) return;
-        this.selectedValue = this.$refs.input.value;
-    },
-    methods: {
-        rangeVal(event) {
-            this.selectedValue = event.target.value;
-        },
+        if (this.content.initialValue !== undefined && !this.content.globalSettings.variableId)
+            this.value = this.content.initialValue;
     },
 };
 </script>
 
 <style lang="scss" scoped>
-.ww-form-input {
-    width: 100%;
-    outline: none;
-    font-family: inherit;
-    border: inherit;
-
-    &::placeholder {
-        color: inherit;
-        opacity: 0.7;
-    }
-    /* wwEditor:start */
-    &.editing {
-        pointer-events: none;
-    }
-    /* wwEditor:end */
-}
-
-.input-container {
+.ww-form-input-range {
     position: relative;
     width: 100%;
     outline: none;
     font-family: inherit;
     border: inherit;
-
     &::placeholder {
         color: inherit;
         opacity: 0.7;
@@ -140,7 +109,6 @@ export default {
         pointer-events: none;
     }
     /* wwEditor:end */
-
     input[type='range'] {
         -webkit-appearance: none;
         margin: 10px 0;
@@ -223,23 +191,21 @@ export default {
     input[type='range']:focus::-ms-fill-upper {
         background: var(--range-background);
     }
-}
-
-.input-container .tooltiptext {
-    visibility: visible;
-    background-color: var(--tooltip-background);
-    color: var(--tooltip-text-color);
-    text-align: center;
-    padding: 5px 15px;
-    border-radius: 6px;
-    position: absolute;
-    z-index: 20;
-    top: 0px;
-    left: var(--tooltip-position);
-    transform: translateY(-120%) translateX(-5%);
-}
-
-.input-container:hover .tooltiptext {
-    visibility: visible;
+    &__tooltip {
+        visibility: visible;
+        background-color: var(--tooltip-background);
+        color: var(--tooltip-text-color);
+        text-align: center;
+        padding: 5px 15px;
+        border-radius: 6px;
+        position: absolute;
+        z-index: 20;
+        top: 0px;
+        left: var(--tooltip-position);
+        transform: translateY(-120%) translateX(-5%);
+    }
+    &:hover &__tooltiptext {
+        visibility: visible;
+    }
 }
 </style>

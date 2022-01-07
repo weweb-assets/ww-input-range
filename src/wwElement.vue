@@ -34,11 +34,6 @@ export default {
 
         return { variableValue, setValue };
     },
-    data() {
-        return {
-            internalValue: this.variableValue,
-        };
-    },
     computed: {
         isEditing() {
             /* wwEditor:start */
@@ -54,7 +49,6 @@ export default {
             set(value) {
                 if (this.value !== value) {
                     this.$emit('trigger-event', { name: 'change', event: { value } });
-                    this.internalValue = value;
                     this.setValue(value);
                 }
             },
@@ -100,7 +94,7 @@ export default {
         opacity: 0.7;
     }
     /* wwEditor:start */
-    &.editing {
+    .editing {
         pointer-events: none;
     }
     /* wwEditor:end */

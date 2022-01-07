@@ -4,66 +4,38 @@ export default {
     },
     triggerEvents: [{ name: 'change', label: { en: 'On change' }, event: { value: '' } }],
     properties: {
-        globalSettings: {
-            type: 'Object',
+        value: {
+            label: {
+                en: 'Value',
+            },
+            type: 'Number',
+            options: content => ({ min: 0, max: content.max }),
             section: 'settings',
-            options: {
-                item: {
-                    variableId: {
-                        label: {
-                            en: 'Associated variable',
-                        },
-                        type: 'Variable',
-                        options: {
-                            types: ['Number'],
-                        },
-                        section: 'settings',
-                        hidden: content => !content.globalSettings.variableId,
-                        defaultValue: null,
-                    },
-                    initialValue: {
-                        label: {
-                            en: 'Initial value',
-                        },
-                        type: 'Text',
-                        section: 'settings',
-                        bindable: true,
-                        hidden: content => content.globalSettings.variableId,
-                        defaultValue: '',
-                    },
-                    name: {
-                        label: { en: 'Name', fr: 'Nom' },
-                        type: 'Text',
-                        options: { placeholder: 'Name' },
-                    },
-                    required: {
-                        label: { en: 'Required', fr: 'Requis' },
-                        type: 'OnOff',
-                    },
-                    min: {
-                        label: { en: 'Min range', fr: 'Min range' },
-                        type: 'Number',
-                        options: { min: 0, max: 10000 },
-                    },
-                    max: {
-                        label: { en: 'Max range', fr: 'Max range' },
-                        type: 'Number',
-                        options: { min: 1, max: 10000 },
-                    },
-                    step: {
-                        label: { en: 'Step', fr: 'Step' },
-                        type: 'Number',
-                        options: { min: 1, max: 100 },
-                    },
-                },
-            },
-            defaultValue: {
-                name: '',
-                required: true,
-                min: 0,
-                max: 10000,
-                step: 1,
-            },
+            bindable: true,
+            defaultValue: 0,
+        },
+        required: {
+            label: { en: 'Required', fr: 'Requis' },
+            type: 'OnOff',
+            defaultValue: true,
+        },
+        min: {
+            label: { en: 'Min range', fr: 'Min range' },
+            type: 'Number',
+            options: { min: 0, max: 1000 },
+            defaultValue: 0,
+        },
+        max: {
+            label: { en: 'Max range', fr: 'Max range' },
+            type: 'Number',
+            options: { min: 1, max: 1000 },
+            defaultValue: 100,
+        },
+        step: {
+            label: { en: 'Step', fr: 'Step' },
+            type: 'Number',
+            options: { min: 1, max: 100 },
+            defaultValue: 1,
         },
         globalStyle: {
             type: 'Object',

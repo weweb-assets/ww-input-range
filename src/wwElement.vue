@@ -1,4 +1,4 @@
-<template v-if="content.globalSettings">
+<template>
     <div class="ww-form-input-range" :style="tooltipStyle">
         <div v-if="content.isTooltip" id="tooltiptext" class="ww-form-input-range__tooltip">
             {{ value }}
@@ -8,19 +8,17 @@
             v-model="value"
             :class="{ editing: isEditing }"
             type="range"
-            :name="isEditing ? `${content.globalSettings.name}-editing` : content.globalSettings.name"
-            :required="content.globalSettings.required"
+            :name="wwElementState.name"
+            :required="content.required"
             :style="style"
-            :min="content.globalSettings.min"
-            :max="content.globalSettings.max"
-            :step="content.globalSettings.step"
+            :min="content.min"
+            :max="content.max"
+            :step="content.step"
         />
     </div>
 </template>
 
 <script>
-import { computed } from 'vue';
-
 export default {
     props: {
         content: { type: Object, required: true },
@@ -28,17 +26,17 @@ export default {
         wwEditorState: { type: Object, required: true },
         /* wwEditor:end */
         uid: { type: String, required: true },
+        wwElementState: { type: Object, required: true },
     },
     emits: ['trigger-event'],
     setup(props) {
-        const internalVariableId = computed(() => props.content.globalSettings.variableId);
-        const variableId = wwLib.wwVariable.useComponentVariable(props.uid, 'value', '', internalVariableId);
+        const { value: variableValue, setValue } = wwLib.wwVariable.useComponentVariable(props.uid, 'value', 0);
 
-        return { variableId };
+        return { variableValue, setValue };
     },
     data() {
         return {
-            internalValue: 0,
+            internalValue: this.variableValue,
         };
     },
     computed: {
@@ -51,13 +49,14 @@ export default {
         },
         value: {
             get() {
-                if (this.variableId) return wwLib.wwVariable.getValue(this.variableId);
-                return this.internalValue;
+                return this.variableValue;
             },
             set(value) {
-                this.$emit('trigger-event', { name: 'change', event: { value } });
-                this.internalValue = value;
-                if (this.variableId) wwLib.wwVariable.updateValue(this.variableId, value);
+                if (this.value !== value) {
+                    this.$emit('trigger-event', { name: 'change', event: { value } });
+                    this.internalValue = value;
+                    this.setValue(value);
+                }
             },
         },
         style() {
@@ -73,22 +72,18 @@ export default {
             return {
                 fontSize: this.content.globalStyle.fontSize,
                 fontFamily: this.content.globalStyle.fontFamily,
-                '--tooltip-position': 'calc(' + (this.value * 100) / this.content.globalSettings.max + '% - 20px)',
+                '--tooltip-position': 'calc(' + (this.value * 100) / this.content.max + '% - 20px)',
                 '--tooltip-background': this.content.globalStyle.tooltipBackground,
                 '--tooltip-text-color': this.content.globalStyle.tooltipTextColor,
             };
         },
     },
     watch: {
-        /* wwEditor:start */
-        'content.globalSettings.initialValue'(value) {
-            if (value !== undefined && !this.content.globalSettings.variableId) this.value = value;
+        'content.value'(value) {
+            value = parseFloat(value);
+            if (isNaN(value)) value = 0;
+            this.value = value;
         },
-        /* wwEditor:end */
-    },
-    mounted() {
-        if (this.content.initialValue !== undefined && !this.content.globalSettings.variableId)
-            this.value = this.content.initialValue;
     },
 };
 </script>

@@ -2,11 +2,14 @@ export default {
     editor: {
         label: { fr: 'Range Input', en: 'Range Input' },
     },
-    triggerEvents: [{ name: 'change', label: { en: 'On change' }, event: { value: '' } }],
+    triggerEvents: [
+        { name: 'change', label: { en: 'On change' }, event: { value: '' } },
+        { name: 'initValueChange', label: { en: 'On init value change' }, event: { value: '' } },
+    ],
     properties: {
         value: {
             label: {
-                en: 'Value',
+                en: 'Init value',
             },
             type: 'Number',
             options: content => ({ min: 0, max: content.max }),

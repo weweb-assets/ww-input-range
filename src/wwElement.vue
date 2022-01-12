@@ -5,7 +5,7 @@
         </div>
         <input
             ref="input"
-            v-model="value"
+            :value="value"
             :class="{ editing: isEditing }"
             type="range"
             :name="wwElementState.name"
@@ -14,6 +14,7 @@
             :min="content.min"
             :max="content.max"
             :step="content.step"
+            @input="handleManualInput($event.target.value)"
         />
     </div>
 </template>
@@ -30,8 +31,9 @@ export default {
     },
     emits: ['trigger-event'],
     setup(props) {
-        const { value: variableValue, setValue } = wwLib.wwVariable.useComponentVariable(props.uid, 'value', 0);
-
+        let value = parseFloat(props.content.value);
+        value = isNaN(value) ? 0 : value;
+        const { value: variableValue, setValue } = wwLib.wwVariable.useComponentVariable(props.uid, 'value', value);
         return { variableValue, setValue };
     },
     computed: {
@@ -42,16 +44,8 @@ export default {
             // eslint-disable-next-line no-unreachable
             return false;
         },
-        value: {
-            get() {
-                return this.variableValue;
-            },
-            set(value) {
-                if (this.value !== value) {
-                    this.$emit('trigger-event', { name: 'change', event: { value } });
-                    this.setValue(value);
-                }
-            },
+        value() {
+            return this.variableValue;
         },
         style() {
             if (!this.content || !this.content.globalStyle) return {};
@@ -73,10 +67,21 @@ export default {
         },
     },
     watch: {
-        'content.value'(value) {
+        'content.value'(newValue) {
+            newValue = parseFloat(newValue);
+            if (isNaN(newValue)) newValue = 0;
+            if (newValue === this.value) return;
+            this.setValue(newValue);
+            this.$emit('trigger-event', { name: 'initValueChange', event: { value: newValue } });
+        },
+    },
+    methods: {
+        handleManualInput(value) {
             value = parseFloat(value);
             if (isNaN(value)) value = 0;
-            this.value = value;
+            if (value === this.value) return;
+            this.setValue(value);
+            this.$emit('trigger-event', { name: 'change', event: { value } });
         },
     },
 };

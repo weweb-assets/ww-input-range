@@ -31,9 +31,15 @@ export default {
     },
     emits: ['trigger-event'],
     setup(props) {
-        let value = parseFloat(props.content.value);
-        value = isNaN(value) ? 0 : value;
-        const { value: variableValue, setValue } = wwLib.wwVariable.useComponentVariable(props.uid, 'value', value);
+        const { value: variableValue, setValue } = wwLib.wwVariable.useComponentVariable({
+            uid: props.uid,
+            name: 'value',
+            defaultValue: value,
+            sanitizer: value => {
+                const parsedValue = parseFloat(value)
+                return isNaN(parsedValue) ? 0 : parsedValue
+            }
+        });
         return { variableValue, setValue };
     },
     computed: {
@@ -67,21 +73,19 @@ export default {
         },
     },
     watch: {
-        'content.value'(newValue) {
-            newValue = parseFloat(newValue);
-            if (isNaN(newValue)) newValue = 0;
-            if (newValue === this.value) return;
-            this.setValue(newValue);
-            this.$emit('trigger-event', { name: 'initValueChange', event: { value: newValue } });
+        'content.value'(value) {
+            const { newValue, hasChanged } = this.setValue(newValue);
+            if (hasChanged) {
+                this.$emit('trigger-event', { name: 'initValueChange', event: { value: newValue } });
+            }
         },
     },
     methods: {
         handleManualInput(value) {
-            value = parseFloat(value);
-            if (isNaN(value)) value = 0;
-            if (value === this.value) return;
-            this.setValue(value);
-            this.$emit('trigger-event', { name: 'change', event: { value } });
+            const { newValue, hasChanged } = this.setValue(newValue);
+            if (hasChanged) {
+                this.$emit('trigger-event', { name: 'change', event: { value: newValue } });
+            }
         },
     },
 };

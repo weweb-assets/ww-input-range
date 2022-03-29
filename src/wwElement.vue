@@ -33,7 +33,12 @@ export default {
     setup(props) {
         let value = parseFloat(props.content.value);
         value = isNaN(value) ? 0 : value;
-        const { value: variableValue, setValue } = wwLib.wwVariable.useComponentVariable(props.uid, 'value', value);
+        const { value: variableValue, setValue } = wwLib.wwVariable.useComponentVariable({
+            uid: props.uid,
+            name: 'value',
+            type: 'number',
+            defaultValue: value
+        });
         return { variableValue, setValue };
     },
     computed: {

@@ -21,6 +21,7 @@ export default {
             label: { en: 'Required', fr: 'Requis' },
             type: 'OnOff',
             defaultValue: true,
+            bindable: true
         },
         min: {
             label: { en: 'Min range', fr: 'Min range' },

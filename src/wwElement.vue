@@ -14,7 +14,7 @@
             :min="content.min"
             :max="content.max"
             :step="content.step"
-            @input="handleManualInput($event.target.value)"
+            @input="handleManualInput($event)"
         />
     </div>
 </template>
@@ -81,12 +81,12 @@ export default {
         },
     },
     methods: {
-        handleManualInput(value) {
-            value = parseFloat(value);
+        handleManualInput(event) {
+            const value = parseFloat(event.target.value);
             if (isNaN(value)) value = 0;
             if (value === this.value) return;
             this.setValue(value);
-            this.$emit('trigger-event', { name: 'change', event: { value } });
+            this.$emit('trigger-event', { name: 'change', event: { domEvent: event, value } });
         },
     },
 };

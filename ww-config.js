@@ -1,11 +1,18 @@
+import { overridableStyle, overridablePropertiesOrder } from './src/overridableStyle';
+
 export default {
     editor: {
         label: { fr: 'Range Input', en: 'Range Input' },
+        customStylePropertiesOrder: [...overridablePropertiesOrder],
+        customSettingsPropertiesOrder: [
+            'initValueFrom',
+            'initValueTo',
+            ['min', 'max', 'step'],
+            ['required', 'disabled'],
+            ['isTooltip', 'showTooltipOn', 'tooltipPosition', 'formating', 'prefix', 'suffix'],
+        ],
     },
-    triggerEvents: [
-        { name: 'change', label: { en: 'On change' }, event: { value: '' } },
-        { name: 'initValueChange', label: { en: 'On init value change' }, event: { value: '' } },
-    ],
+    triggerEvents: [{ name: 'change', label: { en: 'On change' }, event: { value: '' } }],
     properties: {
         value: {
             label: {
@@ -13,104 +20,111 @@ export default {
             },
             type: 'Number',
             options: content => ({ min: 0, max: content.max }),
-            section: 'settings',
             bindable: true,
-            defaultValue: 0,
+            section: 'settings',
+            defaultValue: 15,
         },
         required: {
             label: { en: 'Required', fr: 'Requis' },
             type: 'OnOff',
             defaultValue: true,
             bindable: true,
+            section: 'settings',
+        },
+        disabled: {
+            label: { en: 'Disabled', fr: 'Désactivé' },
+            type: 'OnOff',
+            defaultValue: false,
+            bindable: true,
+            section: 'settings',
         },
         min: {
             label: { en: 'Min range', fr: 'Min range' },
             type: 'Number',
             options: { min: 0, max: 1000 },
             defaultValue: 0,
+            bindable: true,
+            section: 'settings',
         },
         max: {
             label: { en: 'Max range', fr: 'Max range' },
             type: 'Number',
             options: { min: 1, max: 1000 },
             defaultValue: 100,
+            bindable: true,
+            section: 'settings',
         },
         step: {
             label: { en: 'Step', fr: 'Step' },
             type: 'Number',
             options: { min: 1, max: 100 },
             defaultValue: 1,
-        },
-        globalStyle: {
-            type: 'Object',
-            options: {
-                item: {
-                    fontSize: {
-                        type: 'Length',
-                        label: { en: 'Font size', fr: 'Taille du texte' },
-                        options: {
-                            unitChoices: [
-                                { value: 'px', label: 'px', min: 10, max: 50 },
-                                { value: 'em', label: 'em', min: 1, max: 50 },
-                                { value: 'rem', label: 'rem', min: 1, max: 50 },
-                            ],
-                        },
-                        hidden: ({ isTooltip }) => !isTooltip,
-                    },
-                    fontFamily: {
-                        type: 'FontFamily',
-                        label: { en: 'Font family', fr: 'Font' },
-                        hidden: ({ isTooltip }) => !isTooltip,
-                    },
-                    useActiveRangeBackground: {
-                        type: 'OnOff',
-                        label: 'Use an active range background color',
-                        default: false,
-                    },
-                    rangeBackgroundColor: {
-                        label: { en: 'Range background', fr: 'Range background' },
-                        type: 'Color',
-                    },
-                    activeRangeBackgroundColor: {
-                        label: { en: 'Active range background' },
-                        type: 'Color',
-                        hidden: content => !content.globalStyle.useActiveRangeBackground,
-                    },
-                    selectorBorderColor: {
-                        label: { en: 'Selector border', fr: 'Selector border' },
-                        type: 'Color',
-                    },
-                    selectorBackgroundColor: {
-                        label: { en: 'Selector background', fr: 'Selector background' },
-                        type: 'Color',
-                    },
-                    tooltipBackground: {
-                        label: { en: 'Tooltip background', fr: 'Tooltip background' },
-                        type: 'Color',
-                        hidden: ({ isTooltip }) => !isTooltip,
-                    },
-                    tooltipTextColor: {
-                        label: { en: 'Tooltip background', fr: 'Tooltip background' },
-                        type: 'Color',
-                        hidden: ({ isTooltip }) => !isTooltip,
-                    },
-                },
-            },
-            defaultValue: {
-                fontSize: '15px',
-                fontFamily: '',
-                activeRangeBackgroundColor: null,
-                rangeBackgroundColor: 'rgb(9, 154, 242)',
-                selectorBorderColor: '#1565C0',
-                selectorBackgroundColor: 'rgb(9, 154, 242)',
-                tooltipBackground: 'rgb(9, 154, 242)',
-                tooltipTextColor: '#FFFFFF',
-            },
+            bindable: true,
+            section: 'settings',
         },
         isTooltip: {
-            label: { en: 'Tooltip', fr: 'Tooltip' },
+            label: { en: 'Show tooltip', fr: 'Show tooltip' },
             type: 'OnOff',
             defaultValue: true,
+            section: 'settings',
         },
+        showTooltipOn: {
+            hidden: content => !content.isTooltip,
+            label: {
+                en: 'On',
+            },
+            type: 'TextSelect',
+            options: {
+                options: [
+                    { value: 'always', label: { en: 'Always' } },
+                    { value: 'focus', label: { en: 'Focus' } },
+                    { value: 'drag', label: { en: 'Drag' } },
+                ],
+            },
+            defaultValue: 'always',
+            section: 'settings',
+        },
+        tooltipPosition: {
+            hidden: content => !content.isTooltip,
+            label: {
+                en: 'Position',
+            },
+            type: 'TextSelect',
+            options: {
+                options: [
+                    { value: 'top', label: { en: 'Top' } },
+                    { value: 'bottom', label: { en: 'Bottom' } },
+                ],
+            },
+            defaultValue: 'top',
+            section: 'settings',
+        },
+        formating: {
+            label: { en: 'Tooltip formating', fr: 'Formatage' },
+            type: 'OnOff',
+            defaultValue: false,
+            section: 'settings',
+        },
+        prefix: {
+            hidden: content => !content.formating,
+            label: { en: 'Prefix', fr: 'Prefixe' },
+            type: 'Text',
+            options: {
+                placeholder: '$',
+            },
+            defaultValue: '',
+            section: 'settings',
+        },
+        suffix: {
+            hidden: content => !content.formating,
+            label: { en: 'Suffix', fr: 'Suffixe' },
+            type: 'Text',
+            options: {
+                placeholder: 'Degrees celsius',
+            },
+            defaultValue: '',
+            section: 'settings',
+        },
+        ...overridableStyle,
     },
 };

@@ -21,7 +21,7 @@ export default {
             label: { en: 'Required', fr: 'Requis' },
             type: 'OnOff',
             defaultValue: true,
-            bindable: true
+            bindable: true,
         },
         min: {
             label: { en: 'Min range', fr: 'Min range' },
@@ -62,9 +62,19 @@ export default {
                         label: { en: 'Font family', fr: 'Font' },
                         hidden: ({ isTooltip }) => !isTooltip,
                     },
+                    useActiveRangeBackground: {
+                        type: 'OnOff',
+                        label: 'Use an active range background color',
+                        default: false,
+                    },
                     rangeBackgroundColor: {
                         label: { en: 'Range background', fr: 'Range background' },
                         type: 'Color',
+                    },
+                    activeRangeBackgroundColor: {
+                        label: { en: 'Active range background' },
+                        type: 'Color',
+                        hidden: content => !content.globalStyle.useActiveRangeBackground,
                     },
                     selectorBorderColor: {
                         label: { en: 'Selector border', fr: 'Selector border' },
@@ -89,6 +99,7 @@ export default {
             defaultValue: {
                 fontSize: '15px',
                 fontFamily: '',
+                activeRangeBackgroundColor: null,
                 rangeBackgroundColor: 'rgb(9, 154, 242)',
                 selectorBorderColor: '#1565C0',
                 selectorBackgroundColor: 'rgb(9, 154, 242)',

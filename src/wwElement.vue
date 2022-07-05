@@ -37,7 +37,7 @@ export default {
             uid: props.uid,
             name: 'value',
             type: 'number',
-            defaultValue: value
+            defaultValue: value,
         });
         return { variableValue, setValue };
     },
@@ -53,12 +53,20 @@ export default {
             return this.variableValue;
         },
         style() {
-            if (!this.content || !this.content.globalStyle) return {};
+            const ratio = ((this.value - this.content.min) / (this.content.max - this.content.min)) * 100;
+            if (!this.content || !this.content.globalStyle)
+                return {
+                    '--ratio': `${ratio}%`,
+                };
             return {
                 '--range-border': this.content.globalStyle.rangeBorderColor,
                 '--range-background': this.content.globalStyle.rangeBackgroundColor,
+                '--active-range-background': this.content.globalStyle.useActiveRangeBackground
+                    ? this.content.globalStyle.activeRangeBackgroundColor
+                    : this.content.globalStyle.rangeBackgroundColor,
                 '--selector-border': this.content.globalStyle.selectorBorderColor,
                 '--selector-background': this.content.globalStyle.selectorBackgroundColor,
+                '--ratio': `${ratio}%`,
             };
         },
         tooltipStyle() {
@@ -121,7 +129,8 @@ export default {
         height: 5px;
         cursor: pointer;
         box-shadow: 0px 0px 0px #000000;
-        background: var(--range-background);
+        background: linear-gradient(var(--active-range-background), var(--active-range-background)) 0 / var(--ratio)
+            100% no-repeat var(--range-background);
         border-radius: 1px;
         border: 0px solid #000000;
     }
@@ -163,13 +172,15 @@ export default {
         color: transparent;
     }
     input[type='range']::-ms-fill-lower {
-        background: var(--range-background);
+        background: linear-gradient(var(--active-range-background), var(--active-range-background)) 0 / var(--ratio)
+            100% no-repeat var(--range-background);
         border: 0px solid #000000;
         border-radius: 2px;
         box-shadow: 0px 0px 0px #000000;
     }
     input[type='range']::-ms-fill-upper {
-        background: var(--range-background);
+        background: linear-gradient(var(--active-range-background), var(--active-range-background)) 0 / var(--ratio)
+            100% no-repeat var(--range-background);
         border: 0px solid #000000;
         border-radius: 2px;
         box-shadow: 0px 0px 0px #000000;
@@ -185,10 +196,12 @@ export default {
         cursor: pointer;
     }
     input[type='range']:focus::-ms-fill-lower {
-        background: var(--range-background);
+        background: linear-gradient(var(--active-range-background), var(--active-range-background)) 0 / var(--ratio)
+            100% no-repeat var(--range-background);
     }
     input[type='range']:focus::-ms-fill-upper {
-        background: var(--range-background);
+        background: linear-gradient(var(--active-range-background), var(--active-range-background)) 0 / var(--ratio)
+            100% no-repeat var(--range-background);
     }
     &__tooltip {
         visibility: visible;

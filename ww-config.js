@@ -90,7 +90,7 @@ export default {
                         hidden: ({ isTooltip }) => !isTooltip,
                     },
                     tooltipTextColor: {
-                        label: { en: 'Tooltip background', fr: 'Tooltip background' },
+                        label: { en: 'Tooltip text', fr: 'Tooltip texte' },
                         type: 'Color',
                         hidden: ({ isTooltip }) => !isTooltip,
                     },

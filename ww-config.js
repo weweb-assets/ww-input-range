@@ -28,18 +28,21 @@ export default {
             type: 'Number',
             options: { min: 0, max: 1000 },
             defaultValue: 0,
+            bindable: true,
         },
         max: {
             label: { en: 'Max range', fr: 'Max range' },
             type: 'Number',
             options: { min: 1, max: 1000 },
             defaultValue: 100,
+            bindable: true,
         },
         step: {
             label: { en: 'Step', fr: 'Step' },
             type: 'Number',
             options: { min: 1, max: 100 },
             defaultValue: 1,
+            bindable: true,
         },
         globalStyle: {
             type: 'Object',

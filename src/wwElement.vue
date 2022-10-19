@@ -1,26 +1,32 @@
 <template>
-    <div class="ww-form-input-range" :style="tooltipStyle">
-        <div v-if="content.isTooltip" id="tooltiptext" class="ww-form-input-range__tooltip">
-            {{ value }}
+    <div class="ww-form-input-range" :class="{ editing: isEditing }" :style="globalOverridableSliderStyle">
+        <div class="spacing">
+            <Slider
+                class="slider"
+                v-model="internalValue"
+                :min="content.min"
+                :max="content.max"
+                :step="content.step"
+                :tooltips="content.isTooltip"
+                :show-tooltip="content.showTooltipOn"
+                :tooltip-position="content.tooltipPosition"
+                :disabled="content.disabled"
+                :format="{
+                    prefix: content.prefix,
+                    suffix: content.suffix,
+                }"
+                :style="overridableSliderStyle"
+            >
+            </Slider>
         </div>
-        <input
-            ref="input"
-            :value="value"
-            :class="{ editing: isEditing }"
-            type="range"
-            :name="wwElementState.name"
-            :required="content.required"
-            :style="style"
-            :min="content.min"
-            :max="content.max"
-            :step="content.step"
-            @input="handleManualInput($event)"
-        />
     </div>
 </template>
 
 <script>
+import Slider from '@vueform/slider';
+
 export default {
+    components: { Slider },
     props: {
         content: { type: Object, required: true },
         /* wwEditor:start */
@@ -41,6 +47,11 @@ export default {
         });
         return { variableValue, setValue };
     },
+    data() {
+        return {
+            internalValue: 15,
+        };
+    },
     computed: {
         isEditing() {
             /* wwEditor:start */
@@ -52,34 +63,63 @@ export default {
         value() {
             return this.variableValue;
         },
-        style() {
-            const ratio = ((this.value - this.content.min) / (this.content.max - this.content.min)) * 100;
-            if (!this.content || !this.content.globalStyle)
-                return {
-                    '--ratio': `${ratio}%`,
-                };
+        handleBorder() {
+            return `${this.content.handleBorderWidth} solid ${this.content.handleBorderColor}`;
+        },
+        globalOverridableSliderStyle() {
             return {
-                '--range-border': this.content.globalStyle.rangeBorderColor,
-                '--range-background': this.content.globalStyle.rangeBackgroundColor,
-                '--active-range-background': this.content.globalStyle.useActiveRangeBackground
-                    ? this.content.globalStyle.activeRangeBackgroundColor
-                    : this.content.globalStyle.rangeBackgroundColor,
-                '--selector-border': this.content.globalStyle.selectorBorderColor,
-                '--selector-background': this.content.globalStyle.selectorBackgroundColor,
-                '--ratio': `${ratio}%`,
+                '--slider-tooltip-font-family': this.content.fontFamily,
             };
         },
-        tooltipStyle() {
+        overridableSliderStyle() {
+            /* OVERRIDABLE PROPERTIES LIST */
+            // https://github.com/vueform/slider#styling-with-css-vars
+
             return {
-                fontSize: this.content.globalStyle.fontSize,
-                fontFamily: this.content.globalStyle.fontFamily,
-                '--tooltip-position': 'calc(' + (this.value * 100) / this.content.max + '% - 20px)',
-                '--tooltip-background': this.content.globalStyle.tooltipBackground,
-                '--tooltip-text-color': this.content.globalStyle.tooltipTextColor,
+                // Slider general
+                '--slider-bg': this.content.sliderBg,
+                '--slider-connect-bg': this.content.sliderConnectBg,
+                '--slider-connect-bg-disabled': this.content.sliderConnectBgDisabled,
+                '--slider-height': this.content.sliderHeight,
+                '--slider-radius': this.content.sliderRadius,
+
+                // Slider handle
+                '--slider-handle-bg': this.content.handleBg,
+                '--slider-handle-border': this.handleBorder,
+                '--slider-handle-width': this.content.handleWidth,
+                '--slider-handle-height': this.content.handleHeight,
+                '--slider-handle-radius': this.content.handleRadius,
+                '--slider-handle-shadow': this.content.handleShadow,
+                '--slider-handle-shadow-active': this.content.handleShadowActive,
+                '--slider-handle-ring-width': this.content.handleRingWidth,
+                '--slider-handle-ring-color': this.content.handleRingColor,
+
+                // Slider font tooltip
+                '--slider-tooltip-font-size': this.content.fontSize,
+                '--slider-tooltip-line-height': this.content.lineHeight,
+                '--slider-tooltip-font-weight': this.content.fontWeight,
+
+                // Slider tooltip
+                '--slider-tooltip-color': this.content.tooltipColor,
+                '--slider-tooltip-bg': this.content.tooltipBgColor,
+                '--slider-tooltip-bg-disabled': this.content.tooltipBgColorDisabled,
+                '--slider-tooltip-radius': this.content.tooltipRadius,
+                '--slider-tooltip-py': this.content.tooltipHeight,
+                '--slider-tooltip-px': this.content.tooltipWidth,
+                '--slider-tooltip-arrow-size': this.content.tooltipArroySize,
+                '--slider-tooltip-distance': this.content.tooltipDistance,
             };
         },
     },
     watch: {
+        internalValue(newValue) {
+            if (newValue === this.value) return;
+            this.setValue(newValue);
+            this.$emit('trigger-event', {
+                name: 'change',
+                event: { value: newValue },
+            });
+        },
         'content.value'(newValue) {
             newValue = parseFloat(newValue);
             if (isNaN(newValue)) newValue = 0;
@@ -88,136 +128,25 @@ export default {
             this.$emit('trigger-event', { name: 'initValueChange', event: { value: newValue } });
         },
     },
-    methods: {
-        handleManualInput(event) {
-            const value = parseFloat(event.target.value);
-            if (isNaN(value)) value = 0;
-            if (value === this.value) return;
-            this.setValue(value);
-            this.$emit('trigger-event', { name: 'change', event: { domEvent: event, value } });
-        },
-    },
 };
 </script>
 
+<style src="@vueform/slider/themes/default.css"></style>
+
 <style lang="scss" scoped>
 .ww-form-input-range {
-    position: relative;
-    width: 100%;
-    outline: none;
-    font-family: inherit;
-    border: inherit;
-    &::placeholder {
-        color: inherit;
-        opacity: 0.7;
+    .spacing {
+        padding: 0.5rem 0;
     }
-    /* wwEditor:start */
-    .editing {
+    &.editing {
         pointer-events: none;
     }
-    /* wwEditor:end */
-    input[type='range'] {
-        -webkit-appearance: none;
-        margin: 10px 0;
-        width: 100%;
-    }
-    input[type='range']:focus {
-        outline: none;
-    }
-    input[type='range']::-webkit-slider-runnable-track {
-        width: 100%;
-        height: 5px;
-        cursor: pointer;
-        box-shadow: 0px 0px 0px #000000;
-        background: linear-gradient(var(--active-range-background), var(--active-range-background)) 0 / var(--ratio)
-            100% no-repeat var(--range-background);
-        border-radius: 1px;
-        border: 0px solid #000000;
-    }
-    input[type='range']::-webkit-slider-thumb {
-        box-shadow: 0px 0px 0px #000000;
-        border: 1px solid var(--selector-border);
-        height: 18px;
-        width: 18px;
-        border-radius: 25px;
-        background: var(--selector-background);
-        cursor: pointer;
-        -webkit-appearance: none;
-        margin-top: -7px;
-    }
-    input[type='range']::-moz-range-track {
-        width: 100%;
-        height: 5px;
-        cursor: pointer;
-        box-shadow: 0px 0px 0px #000000;
-        background: var(--range-background);
-        border-radius: 1px;
-        border: 0px solid #000000;
-    }
-    input[type='range']::-moz-range-thumb {
-        box-shadow: 0px 0px 0px #000000;
-        border: 1px solid var(--range-background);
-        height: 18px;
-        width: 18px;
-        border-radius: 25px;
-        background: var(--range-background);
-        cursor: pointer;
-    }
-    input[type='range']::-ms-track {
-        width: 100%;
-        height: 5px;
-        cursor: pointer;
-        background: transparent;
-        border-color: transparent;
-        color: transparent;
-    }
-    input[type='range']::-ms-fill-lower {
-        background: linear-gradient(var(--active-range-background), var(--active-range-background)) 0 / var(--ratio)
-            100% no-repeat var(--range-background);
-        border: 0px solid #000000;
-        border-radius: 2px;
-        box-shadow: 0px 0px 0px #000000;
-    }
-    input[type='range']::-ms-fill-upper {
-        background: linear-gradient(var(--active-range-background), var(--active-range-background)) 0 / var(--ratio)
-            100% no-repeat var(--range-background);
-        border: 0px solid #000000;
-        border-radius: 2px;
-        box-shadow: 0px 0px 0px #000000;
-    }
-    input[type='range']::-ms-thumb {
-        margin-top: 1px;
-        box-shadow: 0px 0px 0px #000000;
-        border: 1px solid var(--range-border);
-        height: 18px;
-        width: 18px;
-        border-radius: 25px;
-        background: var(--range-background);
-        cursor: pointer;
-    }
-    input[type='range']:focus::-ms-fill-lower {
-        background: linear-gradient(var(--active-range-background), var(--active-range-background)) 0 / var(--ratio)
-            100% no-repeat var(--range-background);
-    }
-    input[type='range']:focus::-ms-fill-upper {
-        background: linear-gradient(var(--active-range-background), var(--active-range-background)) 0 / var(--ratio)
-            100% no-repeat var(--range-background);
-    }
-    &__tooltip {
-        visibility: visible;
-        background-color: var(--tooltip-background);
-        color: var(--tooltip-text-color);
-        text-align: center;
-        padding: 5px 15px;
-        border-radius: 6px;
-        position: absolute;
-        z-index: 20;
-        top: 0px;
-        left: var(--tooltip-position);
-        transform: translateY(-120%) translateX(-5%);
-    }
-    &:hover &__tooltiptext {
-        visibility: visible;
-    }
+}
+</style>
+
+<style lang="scss">
+// discuss about global style
+.slider-tooltip {
+    font-family: var(--slider-tooltip-font-family) !important;
 }
 </style>

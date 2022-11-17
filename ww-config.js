@@ -73,19 +73,23 @@ export default {
                     rangeBackgroundColor: {
                         label: { en: 'Range background', fr: 'Range background' },
                         type: 'Color',
+                        bindable: true,
                     },
                     activeRangeBackgroundColor: {
                         label: { en: 'Active range background' },
                         type: 'Color',
                         hidden: content => !content.globalStyle.useActiveRangeBackground,
+                        bindable: true,
                     },
                     selectorBorderColor: {
                         label: { en: 'Selector border', fr: 'Selector border' },
                         type: 'Color',
+                        bindable: true,
                     },
                     selectorBackgroundColor: {
                         label: { en: 'Selector background', fr: 'Selector background' },
                         type: 'Color',
+                        bindable: true,
                     },
                     tooltipBackground: {
                         label: { en: 'Tooltip background', fr: 'Tooltip background' },

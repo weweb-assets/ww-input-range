@@ -42,7 +42,7 @@ export default {
                 let value = parseFloat(props.content.value);
                 value = isNaN(value) ? 0 : value;
                 return value
-            },
+            }),
         });
         return { variableValue, setValue };
     },

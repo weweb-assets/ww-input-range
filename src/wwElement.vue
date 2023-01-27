@@ -20,6 +20,8 @@
 </template>
 
 <script>
+import { computed } from "vue";
+
 export default {
     props: {
         content: { type: Object, required: true },
@@ -31,13 +33,16 @@ export default {
     },
     emits: ['trigger-event'],
     setup(props) {
-        let value = parseFloat(props.content.value);
-        value = isNaN(value) ? 0 : value;
+      
         const { value: variableValue, setValue } = wwLib.wwVariable.useComponentVariable({
             uid: props.uid,
             name: 'value',
             type: 'number',
-            defaultValue: value,
+            defaultValue: computed(() => {
+                let value = parseFloat(props.content.value);
+                value = isNaN(value) ? 0 : value;
+                return value
+            },
         });
         return { variableValue, setValue };
     },

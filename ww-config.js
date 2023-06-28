@@ -103,6 +103,9 @@ export default {
                     },
                 },
             },
+            responsive: true,
+            states: true,
+            classes: true,
             defaultValue: {
                 fontSize: '15px',
                 fontFamily: '',

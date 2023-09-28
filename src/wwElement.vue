@@ -1,6 +1,6 @@
 <template>
-    <div class="ww-form-input-range" :style="tooltipStyle">
-        <div v-if="content.isTooltip" id="tooltiptext" class="ww-form-input-range__tooltip">
+    <div class="ww-form-input-range" :style="cssVars">
+        <div v-if="content.isTooltip" :style="tooltipStyle" id="tooltiptext" class="ww-form-input-range__tooltip">
             {{ value }}
         </div>
         <input
@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import { computed } from "vue";
+import { computed } from 'vue';
 
 export default {
     props: {
@@ -33,7 +33,6 @@ export default {
     },
     emits: ['trigger-event'],
     setup(props) {
-      
         const { value: variableValue, setValue } = wwLib.wwVariable.useComponentVariable({
             uid: props.uid,
             name: 'value',
@@ -41,7 +40,7 @@ export default {
             defaultValue: computed(() => {
                 let value = parseFloat(props.content.value);
                 value = isNaN(value) ? 0 : value;
-                return value
+                return value;
             }),
         });
         return { variableValue, setValue };
@@ -57,7 +56,7 @@ export default {
         value() {
             return this.variableValue;
         },
-        style() {
+        cssVars() {
             const ratio = ((this.value - this.content.min) / (this.content.max - this.content.min)) * 100;
             if (!this.content || !this.content.globalStyle)
                 return {
@@ -75,10 +74,10 @@ export default {
             };
         },
         tooltipStyle() {
+            const ratio = (this.value - this.content.min) / (this.content.max - this.content.min);
             return {
                 fontSize: this.content.globalStyle.fontSize,
                 fontFamily: this.content.globalStyle.fontFamily,
-                '--tooltip-position': 'calc(' + (this.value * 100) / this.content.max + '% - 20px)',
                 '--tooltip-background': this.content.globalStyle.tooltipBackground,
                 '--tooltip-text-color': this.content.globalStyle.tooltipTextColor,
             };
@@ -210,6 +209,7 @@ export default {
     }
     &__tooltip {
         visibility: visible;
+        box-sizing: border-box;
         background-color: var(--tooltip-background);
         color: var(--tooltip-text-color);
         text-align: center;
@@ -218,8 +218,8 @@ export default {
         position: absolute;
         z-index: 20;
         top: 0px;
-        left: var(--tooltip-position);
-        transform: translateY(-120%) translateX(-5%);
+        left: var(--ratio);
+        transform: translateY(-120%) translateX(-50%);
     }
     &:hover &__tooltiptext {
         visibility: visible;

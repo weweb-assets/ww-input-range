@@ -1,6 +1,8 @@
 export default {
     editor: {
         label: { fr: 'Range Input', en: 'Range Input' },
+        customStylePropertiesOrder: ['isTooltip', 'globalStyle'],
+        customSettingsPropertiesOrder: ['required', 'value', 'min', 'max', 'step'],
     },
     triggerEvents: [
         { name: 'change', label: { en: 'On change' }, event: { value: '' }, default: true },
@@ -20,12 +22,14 @@ export default {
         required: {
             label: { en: 'Required', fr: 'Requis' },
             type: 'OnOff',
+            section: 'settings',
             defaultValue: true,
             bindable: true,
         },
         min: {
             label: { en: 'Min range', fr: 'Min range' },
             type: 'Number',
+            section: 'settings',
             options: { min: 0, max: 1000, noRange: true },
             defaultValue: 0,
             bindable: true,
@@ -33,6 +37,7 @@ export default {
         max: {
             label: { en: 'Max range', fr: 'Max range' },
             type: 'Number',
+            section: 'settings',
             options: { min: 1, max: 1000, noRange: true },
             defaultValue: 100,
             bindable: true,
@@ -40,9 +45,15 @@ export default {
         step: {
             label: { en: 'Step', fr: 'Step' },
             type: 'Number',
+            section: 'settings',
             options: { min: 1, max: 100, noRange: true },
             defaultValue: 1,
             bindable: true,
+        },
+        isTooltip: {
+            label: { en: 'Tooltip', fr: 'Tooltip' },
+            type: 'OnOff',
+            defaultValue: true,
         },
         globalStyle: {
             type: 'Object',
@@ -116,11 +127,6 @@ export default {
                 tooltipBackground: 'rgb(9, 154, 242)',
                 tooltipTextColor: '#FFFFFF',
             },
-        },
-        isTooltip: {
-            label: { en: 'Tooltip', fr: 'Tooltip' },
-            type: 'OnOff',
-            defaultValue: true,
         },
     },
 };

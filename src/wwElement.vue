@@ -122,8 +122,11 @@ export default {
     /* wwEditor:end */
     input[type='range'] {
         -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
         margin: 10px 0;
         width: 100%;
+        background: transparent;
     }
     input[type='range']:focus {
         outline: none;
@@ -154,17 +157,18 @@ export default {
         height: 5px;
         cursor: pointer;
         box-shadow: 0px 0px 0px #000000;
-        background: var(--range-background);
+        background: linear-gradient(var(--active-range-background), var(--active-range-background)) 0 / var(--ratio)
+            100% no-repeat var(--range-background);
         border-radius: 1px;
         border: 0px solid #000000;
     }
     input[type='range']::-moz-range-thumb {
         box-shadow: 0px 0px 0px #000000;
-        border: 1px solid var(--range-background);
+        border: 1px solid var(--selector-border);
         height: 18px;
         width: 18px;
         border-radius: 25px;
-        background: var(--range-background);
+        background: var(--selector-background);
         cursor: pointer;
     }
     input[type='range']::-ms-track {
@@ -192,11 +196,11 @@ export default {
     input[type='range']::-ms-thumb {
         margin-top: 1px;
         box-shadow: 0px 0px 0px #000000;
-        border: 1px solid var(--range-border);
+        border: 1px solid var(--selector-border);
         height: 18px;
         width: 18px;
         border-radius: 25px;
-        background: var(--range-background);
+        background: var(--selector-background);
         cursor: pointer;
     }
     input[type='range']:focus::-ms-fill-lower {

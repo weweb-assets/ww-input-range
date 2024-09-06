@@ -1,12 +1,11 @@
 <template>
-    <div class="ww-form-input-range" :style="cssVars">
+    <div class="ww-form-input-range" :style="cssVars" :class="{ editing: isEditing }">
         <div v-if="content.isTooltip" :style="tooltipStyle" id="tooltiptext" class="ww-form-input-range__tooltip">
             {{ value }}
         </div>
         <input
             ref="input"
             :value="value"
-            :class="{ editing: isEditing }"
             type="range"
             :name="wwElementState.name"
             :required="content.required"
@@ -107,17 +106,19 @@ export default {
 <style lang="scss" scoped>
 .ww-form-input-range {
     position: relative;
-    width: 100%;
     outline: none;
     font-family: inherit;
-    border: inherit;
+    isolation: isolate;
     &::placeholder {
         color: inherit;
         opacity: 0.7;
     }
     /* wwEditor:start */
-    .editing {
-        pointer-events: none;
+    &.editing::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: 1;
     }
     /* wwEditor:end */
     input[type='range'] {

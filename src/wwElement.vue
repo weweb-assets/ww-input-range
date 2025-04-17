@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
 export default {
     props: {
@@ -43,7 +43,11 @@ export default {
                 return value;
             }),
         });
-        return { variableValue, setValue };
+
+        const isDebouncing = ref(false);
+        let debounceTimeout = null;
+
+        return { variableValue, setValue, isDebouncing, debounceTimeout };
     },
     computed: {
         isEditing() {
@@ -82,6 +86,9 @@ export default {
                 '--tooltip-text-color': this.content.globalStyle.tooltipTextColor,
             };
         },
+        delay() {
+            return this.content.debounceDelay ? wwLib.wwUtils.getLengthUnit(this.content.debounceDelay)[0] : 500;
+        },
     },
     watch: {
         'content.value'(newValue) {
@@ -98,7 +105,19 @@ export default {
             if (isNaN(value)) value = 0;
             if (value === this.value) return;
             this.setValue(value);
-            this.$emit('trigger-event', { name: 'change', event: { domEvent: event, value } });
+
+            if (this.content.debounce) {
+                this.isDebouncing = true;
+                if (this.debounceTimeout) {
+                    clearTimeout(this.debounceTimeout);
+                }
+                this.debounceTimeout = setTimeout(() => {
+                    this.$emit('trigger-event', { name: 'change', event: { domEvent: event, value } });
+                    this.isDebouncing = false;
+                }, this.delay);
+            } else {
+                this.$emit('trigger-event', { name: 'change', event: { domEvent: event, value } });
+            }
         },
     },
 };

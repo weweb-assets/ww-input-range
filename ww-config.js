@@ -2,7 +2,7 @@ export default {
     editor: {
         label: { fr: 'Range Input', en: 'Range Input' },
         customStylePropertiesOrder: ['isTooltip', 'globalStyle'],
-        customSettingsPropertiesOrder: ['required', 'value', 'min', 'max', 'step'],
+        customSettingsPropertiesOrder: ['required', 'value', 'min', 'max', 'step', 'debounce', 'debounceDelay'],
     },
     triggerEvents: [
         { name: 'change', label: { en: 'On change' }, event: { value: '' }, default: true },
@@ -49,6 +49,25 @@ export default {
             options: { min: 1, max: 100, noRange: true },
             defaultValue: 1,
             bindable: true,
+        },
+        debounce: {
+            label: { en: 'Debounce' },
+            type: 'OnOff',
+            section: 'settings',
+            defaultValue: true,
+        },
+        debounceDelay: {
+            type: 'Length',
+            label: {
+                en: 'Delay',
+            },
+            options: {
+                unitChoices: [{ value: 'ms', label: 'ms', min: 1, max: 5000 }],
+            },
+            section: 'settings',
+            defaultValue: '500ms',
+            responsive: true,
+            hidden: content => !content.debounce,
         },
         isTooltip: {
             label: { en: 'Tooltip', fr: 'Tooltip' },

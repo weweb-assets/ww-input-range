@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { computed, ref, inject } from 'vue';
+import { computed, ref, inject, emit } from 'vue';
 
 export default {
     props: {

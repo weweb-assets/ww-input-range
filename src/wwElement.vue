@@ -3,19 +3,9 @@
         <div v-if="content.isTooltip" :style="tooltipStyle" id="tooltiptext" class="ww-form-input-range__tooltip">
             {{ value }}
         </div>
-        <input
-            ref="input"
-            :value="value"
-            :class="{ editing: isEditing }"
-            type="range"
-            :name="wwElementState.name"
-            :required="content.required"
-            :style="style"
-            :min="content.min"
-            :max="content.max"
-            :step="content.step"
-            @input="handleManualInput($event)"
-        />
+        <input ref="input" :value="value" :class="{ editing: isEditing }" type="range" :name="wwElementState.name"
+            :required="content.required" :style="style" :min="content.min" :max="content.max" :step="content.step"
+            @input="handleManualInput($event)" />
     </div>
 </template>
 
@@ -46,6 +36,20 @@ export default {
 
         const isDebouncing = ref(false);
         let debounceTimeout = null;
+
+
+        const useForm = inject('_wwForm:useForm', () => { });
+
+        const fieldName = computed(() => props.content.fieldName);
+        const validation = computed(() => props.content.validation);
+        const customValidation = computed(() => props.content.customValidation);
+        const required = computed(() => props.content.required);
+
+        useForm(
+            variableValue,
+            { fieldName, validation, customValidation, required, initialValue: computed(() => props.content.value) },
+            { elementState: props.wwElementState, emit, sidepanelFormPath: 'form', setValue }
+        );
 
         return { variableValue, setValue, isDebouncing, debounceTimeout };
     },
@@ -126,14 +130,17 @@ export default {
     outline: none;
     font-family: inherit;
     border: inherit;
+
     &::placeholder {
         color: inherit;
         opacity: 0.7;
     }
+
     /* wwEditor:start */
     .editing {
         pointer-events: none;
     }
+
     /* wwEditor:end */
     input[type='range'] {
         -webkit-appearance: none;
@@ -143,19 +150,21 @@ export default {
         width: 100%;
         background: transparent;
     }
+
     input[type='range']:focus {
         outline: none;
     }
+
     input[type='range']::-webkit-slider-runnable-track {
         width: 100%;
         height: 5px;
         cursor: pointer;
         box-shadow: 0px 0px 0px #000000;
-        background: linear-gradient(var(--active-range-background), var(--active-range-background)) 0 / var(--ratio)
-            100% no-repeat var(--range-background);
+        background: linear-gradient(var(--active-range-background), var(--active-range-background)) 0 / var(--ratio) 100% no-repeat var(--range-background);
         border-radius: 1px;
         border: 0px solid #000000;
     }
+
     input[type='range']::-webkit-slider-thumb {
         box-shadow: 0px 0px 0px #000000;
         border: 1px solid var(--selector-border);
@@ -167,16 +176,17 @@ export default {
         -webkit-appearance: none;
         margin-top: -7px;
     }
+
     input[type='range']::-moz-range-track {
         width: 100%;
         height: 5px;
         cursor: pointer;
         box-shadow: 0px 0px 0px #000000;
-        background: linear-gradient(var(--active-range-background), var(--active-range-background)) 0 / var(--ratio)
-            100% no-repeat var(--range-background);
+        background: linear-gradient(var(--active-range-background), var(--active-range-background)) 0 / var(--ratio) 100% no-repeat var(--range-background);
         border-radius: 1px;
         border: 0px solid #000000;
     }
+
     input[type='range']::-moz-range-thumb {
         box-shadow: 0px 0px 0px #000000;
         border: 1px solid var(--selector-border);
@@ -186,6 +196,7 @@ export default {
         background: var(--selector-background);
         cursor: pointer;
     }
+
     input[type='range']::-ms-track {
         width: 100%;
         height: 5px;
@@ -194,20 +205,21 @@ export default {
         border-color: transparent;
         color: transparent;
     }
+
     input[type='range']::-ms-fill-lower {
-        background: linear-gradient(var(--active-range-background), var(--active-range-background)) 0 / var(--ratio)
-            100% no-repeat var(--range-background);
+        background: linear-gradient(var(--active-range-background), var(--active-range-background)) 0 / var(--ratio) 100% no-repeat var(--range-background);
         border: 0px solid #000000;
         border-radius: 2px;
         box-shadow: 0px 0px 0px #000000;
     }
+
     input[type='range']::-ms-fill-upper {
-        background: linear-gradient(var(--active-range-background), var(--active-range-background)) 0 / var(--ratio)
-            100% no-repeat var(--range-background);
+        background: linear-gradient(var(--active-range-background), var(--active-range-background)) 0 / var(--ratio) 100% no-repeat var(--range-background);
         border: 0px solid #000000;
         border-radius: 2px;
         box-shadow: 0px 0px 0px #000000;
     }
+
     input[type='range']::-ms-thumb {
         margin-top: 1px;
         box-shadow: 0px 0px 0px #000000;
@@ -218,14 +230,15 @@ export default {
         background: var(--selector-background);
         cursor: pointer;
     }
+
     input[type='range']:focus::-ms-fill-lower {
-        background: linear-gradient(var(--active-range-background), var(--active-range-background)) 0 / var(--ratio)
-            100% no-repeat var(--range-background);
+        background: linear-gradient(var(--active-range-background), var(--active-range-background)) 0 / var(--ratio) 100% no-repeat var(--range-background);
     }
+
     input[type='range']:focus::-ms-fill-upper {
-        background: linear-gradient(var(--active-range-background), var(--active-range-background)) 0 / var(--ratio)
-            100% no-repeat var(--range-background);
+        background: linear-gradient(var(--active-range-background), var(--active-range-background)) 0 / var(--ratio) 100% no-repeat var(--range-background);
     }
+
     &__tooltip {
         visibility: visible;
         box-sizing: border-box;
@@ -240,6 +253,7 @@ export default {
         left: var(--ratio);
         transform: translateY(-120%) translateX(-50%);
     }
+
     &:hover &__tooltiptext {
         visibility: visible;
     }

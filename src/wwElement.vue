@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { computed, ref, inject, emit } from 'vue';
+import { computed, ref, inject } from 'vue';
 
 export default {
     props: {
@@ -22,7 +22,7 @@ export default {
         wwElementState: { type: Object, required: true },
     },
     emits: ['trigger-event'],
-    setup(props) {
+    setup(props, { emit }) {
         const { value: variableValue, setValue } = wwLib.wwVariable.useComponentVariable({
             uid: props.uid,
             name: 'value',

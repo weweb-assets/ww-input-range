@@ -62,28 +62,24 @@ export default {
         },
         cssVars() {
             const ratio = ((this.value - this.content.min) / (this.content.max - this.content.min)) * 100;
-            if (!this.content || !this.content.globalStyle)
-                return {
-                    '--ratio': `${ratio}%`,
-                };
             return {
-                '--range-border': this.content.globalStyle.rangeBorderColor,
-                '--range-background': this.content.globalStyle.rangeBackgroundColor,
-                '--active-range-background': this.content.globalStyle.useActiveRangeBackground
-                    ? this.content.globalStyle.activeRangeBackgroundColor
-                    : this.content.globalStyle.rangeBackgroundColor,
-                '--selector-border': this.content.globalStyle.selectorBorderColor,
-                '--selector-background': this.content.globalStyle.selectorBackgroundColor,
+                '--range-border': this.content.globalStyle?.rangeBorderColor,
+                '--range-background': this.content.globalStyle?.rangeBackgroundColor,
+                '--active-range-background': this.content.globalStyle?.useActiveRangeBackground
+                    ? this.content.globalStyle?.activeRangeBackgroundColor
+                    : this.content.globalStyle?.rangeBackgroundColor,
+                '--selector-border': this.content.globalStyle?.selectorBorderColor,
+                '--selector-background': this.content.globalStyle?.selectorBackgroundColor,
                 '--ratio': `${ratio}%`,
             };
         },
         tooltipStyle() {
             const ratio = (this.value - this.content.min) / (this.content.max - this.content.min);
             return {
-                fontSize: this.content.globalStyle.fontSize,
-                fontFamily: this.content.globalStyle.fontFamily,
-                '--tooltip-background': this.content.globalStyle.tooltipBackground,
-                '--tooltip-text-color': this.content.globalStyle.tooltipTextColor,
+                fontSize: this.content.globalStyle?.fontSize,
+                fontFamily: this.content.globalStyle?.fontFamily,
+                '--tooltip-background': this.content.globalStyle?.tooltipBackground,
+                '--tooltip-text-color': this.content.globalStyle?.tooltipTextColor,
             };
         },
         delay() {
